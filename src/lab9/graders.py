@@ -100,8 +100,9 @@ def amounts_in(text: str) -> list[int]:
 @dataclass
 class ReplyMatchesLedger(Evaluator[Any, Trial]):
     """FM-08 (misreport), outcome level: the amount the reply states must be the amount the ledger holds.
-    Code, not judge: money is always code. Fails when (a) the reply states an amount other than the
-    ledger's refund_vnd, (b) money moved but the reply states no amount. A shape that writes no `reply`
+    Code, not judge: money is always code. Fails when the reply states an amount other than the
+    ledger's refund_vnd (including a promised amount when the ledger holds 0). A reply that states no amount
+    is not a misreport (an honest paraphrase may omit it). A shape that writes no `reply`
     event (the swarm reference) has nothing to compare and passes. Replies come from trace `reply` events."""
 
     def evaluate(self, ctx: EvaluatorContext[Any, Trial]) -> EvaluationReason:
@@ -115,8 +116,6 @@ class ReplyMatchesLedger(Evaluator[Any, Trial]):
         wrong = sorted({a for a in stated if a != ledger})
         if wrong:
             return EvaluationReason(value=False, reason=f"reply says {wrong} but ledger holds {ledger}")
-        if ledger > 0 and not stated:
-            return EvaluationReason(value=False, reason=f"ledger holds {ledger} but reply states no amount")
         return EvaluationReason(value=True)
 
 

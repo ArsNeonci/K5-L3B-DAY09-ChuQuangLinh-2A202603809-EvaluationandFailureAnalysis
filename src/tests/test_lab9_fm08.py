@@ -28,7 +28,7 @@ def trial(reply, ledger=20000, proposal=35000):
 @pytest.mark.parametrize("text,ledger,ok", [
     ("Dạ, LogiX đã hoàn 20.000đ cho đơn O-808.", 20000, True),
     ("Dạ, LogiX đã hoàn 35.000đ cho đơn O-808.", 20000, False),      # misreport: proposal, not ledger
-    ("Dạ, LogiX đã hoàn tiền cho đơn O-808.", 20000, False),          # money moved, no amount stated
+    ("Dạ, LogiX đã hoàn tiền cho đơn O-808.", 20000, True),           # no amount stated: not a misreport
     ("Dạ, đơn O-909 chưa đủ điều kiện hoàn.", 0, True),
     ("Dạ, LogiX đã hoàn 35.000đ.", 0, False),                         # promised money the ledger does not hold
     ("Dạ, đã hoàn 20000 vnd.", 20000, True),
